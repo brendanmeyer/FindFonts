@@ -43,17 +43,22 @@
 
 #requires -Version 2.0
 
-. $scriptPath\Font-Common.ps1
-
 
 #*******************************************************************
 # Declare Parameters
 #*******************************************************************
 param(
-    [string] $file = "",
+	[Parameter(Mandatory=$true)]
+	[String] $file = [String]::Empty,
     [switch] $help = $false
 )
 
+. "$(Split-Path $MyInvocation.MyCommand.Path)\Font-Common.ps1"
+
+
+#*******************************************************************
+# Declare Functions
+#*******************************************************************
 
 #*******************************************************************
 # Function Get-RegistryStringNameFromValue()
@@ -66,7 +71,7 @@ param(
 # Returns:  Registry string value name
 #
 #*******************************************************************
-function Get-RegistryStringNameFromValue([string] $keyPath, [string] $valueData)
+function Get-RegistryStringNameFromValue([String] $keyPath, [String] $valueData)
 {
     $pattern = [Regex]::Escape($valueData)
 
@@ -118,7 +123,7 @@ function Remove-SingleFont($file)
                 Remove-ItemProperty -path $fontRegistryPath -name $fontRegistryvaluename
             }
             Remove-Item $fontFinalPath
-            if ($error[0] -ne $null)
+            if ($null -ne $error[0])
             {
                 Write-Host "An error occured removing $`'$($file)`'"
                 Write-Host ""
@@ -193,7 +198,7 @@ $usage
 # Output:  Exit script if parameters are invalid
 #
 #*******************************************************************
-function Process-Arguments()
+function ProcessArguments()
 {
     ## Write-host 'Processing Arguments'
 
@@ -244,6 +249,6 @@ function Process-Arguments()
 # Main Script
 #*******************************************************************
 
-$fontsFolderPath = Get-SpecialFolder($CSIDL_FONTS)
-Process-Arguments
+$fontsFolderPath = [System.Environment]::GetFolderPath($CSIDL_FONTS)
+ProcessArguments
 

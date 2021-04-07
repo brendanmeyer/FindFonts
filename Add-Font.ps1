@@ -42,21 +42,24 @@
 #******************************************************************************
 
 #requires -Version 2.0
-
-. $scriptPath\Font-Common.ps1
-
-#*******************************************************************
-# Declare Parameters
-#*******************************************************************
 param(
-    [string] $path = "",
+	[Parameter(Mandatory=$true)]
+    [ValidateScript({
+		if($null -eq $_ -or -not ($_ | Test-Path) -or -not ($_ | Test-Path -PathType Leaf) ){
+			throw "The Path is invalid. The Path must be a Font File."
+		}
+		return $true 
+	})]
+	[System.IO.FileInfo]$Path,
     [switch] $help = $false
 )
+
+. "$(Split-Path $MyInvocation.MyCommand.Path)\Font-Common.ps1"
+
 
 #*******************************************************************
 # Declare Functions
 #*******************************************************************
-
 
 #*******************************************************************
 # Function Add-SingleFont()
@@ -68,15 +71,15 @@ param(
 # Returns:  0 - success, 1 - failure
 #
 #*******************************************************************
-function Add-SingleFont($filePath)
+function Add-SingleFont([String]$filePath)
 {
     try
     {
-        [string]$filePath = (resolve-path $filePath).path
-        [string]$fileDir  = split-path $filePath
-        [string]$fileName = split-path $filePath -leaf
-        [string]$fileExt = (Get-Item $filePath).extension
-        [string]$fileBaseName = $fileName -replace($fileExt ,"")
+        [String]$filePath = (resolve-path $filePath).path
+        [String]$fileDir  = split-path $filePath
+        [String]$fileName = split-path $filePath -leaf
+        [String]$fileExt = (Get-Item $filePath).extension
+        [String]$fileBaseName = $fileName -replace($fileExt ,"")
 
         $shell = new-object -com shell.application
         $myFolder = $shell.Namespace($fileDir)
@@ -165,7 +168,7 @@ $usage
 # Output:  Exit script if parameters are invalid
 #
 #*******************************************************************
-function Process-Arguments()
+function ProcessArguments()
 {
     ## Write-host 'Processing Arguments'
 
@@ -245,6 +248,6 @@ function Process-Arguments()
 # Main Script
 #*******************************************************************
 
-$fontsFolderPath = Get-SpecialFolder($CSIDL_FONTS)
-Process-Arguments
+$fontsFolderPath = [System.Environment]::GetFolderPath($CSIDL_FONTS)
+ProcessArguments
 

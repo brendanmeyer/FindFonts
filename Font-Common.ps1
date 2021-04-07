@@ -49,7 +49,7 @@
 #*******************************************************************
 
 # Define constants
-set-variable CSIDL_FONTS 0x14 -option constant
+Set-Variable CSIDL_FONTS 0x14 -option constant
 
 # Create hashtable containing valid font file extensions and text to append to Registry entry name.
 $hashFontFileTypes = @{}
@@ -65,9 +65,8 @@ $hashFontFileTypes.Add(".otf", " (OpenType)")
 #$hashFontFileTypes.Add(".pfm", "")
 
 # Initialize variables
-$invocation = (Get-Variable MyInvocation -Scope 0).Value
-$scriptPath = Split-Path $Invocation.MyCommand.Path
-$fontRegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+Set-Variable invocation (Get-Variable MyInvocation -Scope 0).Value
+Set-Variable fontRegistryPath "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
 
 
 #*******************************************************************
